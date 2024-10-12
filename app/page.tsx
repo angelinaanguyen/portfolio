@@ -168,8 +168,7 @@ export default function SleekPortfolio() {
           <Section id="about">
             <h2 className="text-3xl font-bold mb-4">About Me</h2>
             <p className="max-w-2xl text-center mb-8">
-              I&aposm a passionate web developer with a keen eye for design and a love for creating intuitive user experiences. 
-              With expertise in modern web technologies, I transform ideas into sleek, efficient, and user-friendly applications.
+            Hello! 👋 I’m Angelina, a third-year Computer Science student at the University of Texas at Dallas with a deep passion for frontend development and UX Design. I’m constantly exploring ways to refine my technical skills and create seamless, intuitive, and accessible digital experiences. My goal is to bridge the gap between users and technology by crafting interfaces that feel natural and engaging, making technology more user-friendly and inclusive for everyone.
             </p>
             <Button asChild>
               <a href="#projects">View My Work</a>
