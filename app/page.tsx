@@ -2,9 +2,10 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { motion, useScroll, useSpring, useInView } from 'framer-motion'
-import { Moon, Sun, Github, Linkedin, Mail, ChevronDown } from 'lucide-react'
+import { Moon, Sun, Github, Linkedin, Mail, ChevronDown, Maximize, Minimize} from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { TypeAnimation } from 'react-type-animation'
 
 
@@ -42,6 +43,12 @@ const Section = ({ children, id }: { children: React.ReactNode, id: string }) =>
   )
 }
 
+interface Project {
+  title: string;
+  desc: string;
+  demoUrl: string;
+}
+
 export default function SleekPortfolio() {
   const [darkMode, setDarkMode] = useDarkMode()
   const { scrollYProgress } = useScroll()
@@ -51,17 +58,40 @@ export default function SleekPortfolio() {
     restDelta: 0.001
   })
 
-  const projects = [
-    { title: "Pixel Perfect", desc: "A responsive web app showcasing advanced CSS techniques and animations." },
-    { title: "Data Visualizer", desc: "An interactive dashboard built with D3.js for data visualization." },
-    { title: "AI Chatbot", desc: "A machine learning-powered chatbot using natural language processing." },
-    { title: "E-commerce Platform", desc: "A full-stack e-commerce solution with secure payment integration." }
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
+  const [isFullScreen, setIsFullScreen] = useState(false)
+
+  const projects: Project[] = [
+    {
+      title: "Wordle Game", 
+      desc: "A captivating word-guessing game featuring advanced interactive design and dynamic gameplay mechanics that challenge players to uncover the hidden word within a limited number of attempts",
+      demoUrl: "https://wordle-xi-one.vercel.app/" 
+    },
+    { 
+      title: "Data Visualizer", 
+      desc: "An interactive dashboard built with D3.js for data visualization.",
+      demoUrl: "https://example.com/data-visualizer" // Replace with your actual demo URL
+    },
+    { 
+      title: "AI Chatbot", 
+      desc: "A machine learning-powered chatbot using natural language processing.",
+      demoUrl: "https://example.com/ai-chatbot" // Replace with your actual demo URL
+    },
+    { 
+      title: "E-commerce Platform", 
+      desc: "A full-stack e-commerce solution with secure payment integration.",
+      demoUrl: "https://example.com/e-commerce" // Replace with your actual demo URL
+    }
   ]
 
   const skills = [
     "JavaScript", "React", "Node.js", "Python",
     "GraphQL", "TypeScript", "Next.js", "TailwindCSS"
   ]
+
+  const toggleFullScreen = () => {
+    setIsFullScreen(!isFullScreen)
+  }
 
   return (
     <div className={`${darkMode ? 'dark' : ''}`}>
@@ -179,7 +209,11 @@ export default function SleekPortfolio() {
             <h2 className="text-3xl font-bold mb-8">Projects</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl w-full">
               {projects.map((project, index) => (
-                <Card key={index} className="overflow-hidden transition-transform duration-300 hover:scale-105">
+                <Card 
+                  key={index} 
+                  className="overflow-hidden transition-transform duration-300 hover:scale-105 cursor-pointer"
+                  onClick={() => setSelectedProject(project)}
+                >
                   <CardContent className="p-6">
                     <h3 className="text-xl font-semibold mb-2">{project.title}</h3>
                     <p className="text-muted-foreground">{project.desc}</p>
@@ -231,6 +265,34 @@ export default function SleekPortfolio() {
           © {new Date().getFullYear()} Angelina Nguyen. All rights reserved.
         </footer>
       </div>
+
+      <Dialog 
+        open={selectedProject !== null} 
+        onOpenChange={() => {
+          setSelectedProject(null)
+          setIsFullScreen(false)
+        }}
+      >
+        <DialogContent className={`${isFullScreen ? 'w-screen h-screen max-w-none m-0' : 'sm:max-w-[90vw] sm:max-h-[90vh]'} overflow-hidden`}>
+          <DialogHeader className="flex flex-row items-center justify-between">
+            <div>
+              <DialogTitle>{selectedProject?.title}</DialogTitle>
+              <DialogDescription>{selectedProject?.desc}</DialogDescription>
+            </div>
+            <Button variant="ghost" size="icon" onClick={toggleFullScreen}>
+              {isFullScreen ? <Minimize className="h-4 w-4" /> : <Maximize className="h-4 w-4" />}
+            </Button>
+          </DialogHeader>
+          <div className={`mt-4 ${isFullScreen ? 'h-[calc(100vh-100px)]' : 'relative pb-[56.25%] h-0'}`}>
+            <iframe
+              src={selectedProject?.demoUrl}
+              className={`${isFullScreen ? 'w-full h-full' : 'absolute top-0 left-0 w-full h-full'}`}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
